@@ -2,3 +2,5 @@
 *.dat
 *.dir
 *.pyc
+.ok_history
+.ok_messages
