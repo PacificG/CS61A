@@ -253,5 +253,88 @@ def sqrt(a):
     return improve(sqrt_update,sqrt_close)
 
 
+def make_adder(n):
+    """
+    Returns a function which adds a specific number to the number specified
+
+    >>> add_three = make_adder(3)
+    >>> add_three(4)
+    7
+    >>> add_five = make_adder(5)
+    >>> add_five(4)
+    9
+    """
+    def adder(x):
+        return x + n
+    return adder
+
+def curry2(f):
+    """
+    Takes a function and returns its curried form
+
+    """
+    return lambda x: lambda y: f(x,y) 
+
+def map_to_range(start, end, f):
+    """
+    maps any binary function to range of numbers
+    >>> map_to_range(0,10,curry(pow)(2))
+    1
+    2
+    4
+    8
+    16
+    32
+    64
+    128
+    256
+    512
+    """
+    while start < end:
+        print(f(start))
+        start += 1
+
+
+
+def uncurry2(f):
+    """
+    Returns the uncurried version of the curry functions which takes two 
+    parameters
+
+    """
+    return lambda x,y: f(x)(y)
+
+
+def wears_jacket_with_if(temp, raining):
+    """
+    >>> wears_jacket_with_if(90, False)
+    False
+    >>> wears_jacket_with_if(40, False)
+    True
+    >>> wears_jacket_with_if(100, True)
+    True
+    """
+    # if raining:
+    #     return True
+    # elif temp < 60:
+    #     return True
+    # else:
+    #     return False
+    return False if temp> 60 and not raining else True
+        
+
+def is_prime(n):
+    """
+    >>> is_prime(10)
+    False
+    >>> is_prime(7)
+    True
+    """
+    x = 2
+    while x*x <= n:
+        if n % x == 0:
+            return False
+        x += 1
+    return True
 
 
