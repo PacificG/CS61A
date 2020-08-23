@@ -2,6 +2,7 @@
 
 from dice import six_sided, four_sided, make_test_dice
 from ucb import main, trace, interact
+import statistics
 
 GOAL_SCORE = 100  # The goal of Hog is to score 100 points.
 
@@ -22,6 +23,16 @@ def roll_dice(num_rolls, dice=six_sided):
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    rolled, pigout, score = 0, False, 0
+    while rolled < num_rolls:
+        curr_roll = dice()
+        score += curr_roll
+        rolled += 1
+        if curr_roll is 1:
+            pigout = True
+    if pigout:
+        return 1
+    return score
     # END PROBLEM 1
 
 
@@ -33,6 +44,7 @@ def free_bacon(score):
     assert score < 100, 'The game should be over.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    return 10 - (score % 10) + (score//10) % 10
     # END PROBLEM 2
 
 
@@ -51,6 +63,7 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     assert opponent_score < 100, 'The game should be over.'
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    return free_bacon(opponent_score) if num_rolls is 0 else roll_dice(num_rolls, dice)
     # END PROBLEM 3
 
 
@@ -60,6 +73,7 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    return True if abs((player_score % 10) - (opponent_score % 10)) == (opponent_score//10) % 10 else False
     # END PROBLEM 4
 
 
@@ -100,10 +114,36 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    scoreThisTurn0, scoreThisTurn1 = 0, 0
+    while score0 < goal and score1 < goal:
+        currPlayerScore = score0 if who == 0 else score1
+        opponentScore = score0 if who == 1 else score1
+        strategy = strategy0 if who == 0 else strategy1
+        num_rolls = strategy(currPlayerScore,opponentScore)
+        scoreThisTurn = take_turn(num_rolls,opponentScore, dice)
+        if feral_hogs:
+            scorePrevTurn = scoreThisTurn0 if who == 0 else scoreThisTurn1
+            scoreThisTurn0 = scoreThisTurn if who == 0 else scoreThisTurn0
+            scoreThisTurn1 = scoreThisTurn if who == 1 else scoreThisTurn1
+            if abs(num_rolls - scorePrevTurn) == 2:
+                scoreThisTurn += 3
+        currPlayerScore += scoreThisTurn
+        
+        if is_swap(currPlayerScore, opponentScore):
+            currPlayerScore, opponentScore = opponentScore, currPlayerScore
+        score0 = currPlayerScore if who == 0 else opponentScore
+        score1 = currPlayerScore if who == 1 else opponentScore
+        who = other(who)
+        say = say(score0,score1)
+
+    
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
     "*** YOUR CODE HERE ***"
+
+    
+
     # END PROBLEM 6
     return score0, score1
 
@@ -190,6 +230,18 @@ def announce_highest(who, last_score=0, running_high=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    
+    def say(score0, score1):
+        player = who
+        score = score0 if who == 0 else score1
+        new_high = running_high
+        if score - last_score > running_high:
+            new_high = score - last_score   
+            print("{} point(s)! That's the biggest gain yet for Player {}".format(new_high,player))
+        return announce_highest(player, score, new_high)
+    return say   
+
+
     # END PROBLEM 7
 
 
@@ -229,6 +281,10 @@ def make_averaged(original_function, trials_count=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def average_value(*args):
+        return float(statistics.mean([original_function(*args) for i in range(trials_count)]))
+    return average_value
+
     # END PROBLEM 8
 
 
@@ -243,6 +299,19 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    num_rolls = 10
+    maxavg = 0
+    bestroll = 0
+    while num_rolls > 0:
+        avgfn = make_averaged(roll_dice,trials_count)
+        avg = avgfn(num_rolls, dice)
+        if avg >= maxavg:
+            bestroll = num_rolls
+            maxavg = avg
+        num_rolls -= 1
+    return bestroll
+        
+
     # END PROBLEM 9
 
 
@@ -292,7 +361,7 @@ def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    return num_rolls if free_bacon(opponent_score) < cutoff else 0 # Replace this statement
     # END PROBLEM 10
 
 
@@ -302,7 +371,19 @@ def swap_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     non-beneficial swap. Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    # return 0 if (is_swap(score + free_bacon(opponent_score),opponent_score) and score + free_bacon(opponent_score) < opponent_score) or ((is_swap(score + free_bacon(opponent_score),opponent_score) and score + free_bacon(opponent_score) > opponent_score) or free_bacon(opponent_score) >= cutoff) else num_rolls
+    bacon_score = free_bacon(opponent_score)
+    if is_swap(score + bacon_score, opponent_score):
+        if score + bacon_score <= opponent_score:
+            return 0
+        else:
+            if bacon_score >= cutoff:
+                return num_rolls
+    else:
+        if bacon_score >= cutoff:
+            return 0
+    return num_rolls
+      # Replace this statement
     # END PROBLEM 11
 
 
@@ -310,6 +391,7 @@ def final_strategy(score, opponent_score):
     """Write a brief description of your final strategy.
 
     *** YOUR DESCRIPTION HERE ***
+    
     """
     # BEGIN PROBLEM 12
     return 6  # Replace this statement
