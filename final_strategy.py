@@ -1,15 +1,11 @@
-"""CS 61A Presents The Game of Hog."""
+"""
+    This file contains your final_strategy that will be submitted to the contest.
+    It will only be run on your local machine, so you can import whatever you want!
+    Remember to supply a unique PLAYER_NAME or your submission will not succeed.
+"""
 
-from dice import six_sided, four_sided, make_test_dice
-from ucb import main, trace, interact
+PLAYER_NAME = 'Prashant'  # Change this line!
 import statistics
-
-GOAL_SCORE = 100  # The goal of Hog is to score 100 points.
-
-######################
-# Phase 1: Simulator #
-######################
-
 
 def roll_dice(num_rolls, dice=six_sided):
     """Simulate rolling the DICE exactly NUM_ROLLS > 0 times. Return the sum of
@@ -46,7 +42,6 @@ def free_bacon(score):
     "*** YOUR CODE HERE ***"
     return 10 - (score % 10) + (score//10) % 10
     # END PROBLEM 2
-
 
 def take_turn(num_rolls, opponent_score, dice=six_sided):
     """Simulate a turn rolling NUM_ROLLS dice, which may be 0 (Free Bacon).
@@ -334,26 +329,6 @@ def average_win_rate(strategy, baseline=always_roll(6)):
     return (win_rate_as_player_0 + win_rate_as_player_1) / 2
 
 
-def run_experiments():
-    """Run a series of strategy experiments and report results."""
-    if True:  # Change to False when done finding max_scoring_num_rolls
-        six_sided_max = max_scoring_num_rolls(six_sided)
-        print('Max scoring num rolls for six-sided dice:', six_sided_max)
-
-    if False:  # Change to True to test always_roll(8)
-        print('always_roll(8) win rate:', average_win_rate(always_roll(8)))
-
-    if False:  # Change to True to test bacon_strategy
-        print('bacon_strategy win rate:', average_win_rate(bacon_strategy))
-
-    if False:  # Change to True to test swap_strategy
-        print('swap_strategy win rate:', average_win_rate(swap_strategy))
-
-    if False:  # Change to True to test final_strategy
-        print('final_strategy win rate:', average_win_rate(final_strategy))
-
-    "*** You may add additional experiments as you wish ***"
-
 
 
 def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
@@ -397,27 +372,3 @@ def final_strategy(score, opponent_score):
     avg, bestroll = max_scoring_num_rolls()
     return swap_strategy(score,opponent_score,avg,bestroll) # Replace this statement
     # END PROBLEM 12
-
-##########################
-# Command Line Interface #
-##########################
-
-# NOTE: Functions in this section do not need to be changed. They use features
-# of Python not yet covered in the course.
-
-
-@main
-def run(*args):
-    """Read in the command-line argument and calls corresponding functions.
-
-    This function uses Python syntax/techniques not yet covered in this course.
-    """
-    import argparse
-    parser = argparse.ArgumentParser(description="Play Hog")
-    parser.add_argument('--run_experiments', '-r', action='store_true',
-                        help='Runs strategy experiments')
-
-    args = parser.parse_args()
-
-    if args.run_experiments:
-        run_experiments()
