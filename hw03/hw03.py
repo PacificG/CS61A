@@ -103,6 +103,17 @@ def missing_digits(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n // 10 == 0:
+        return 0
+    x = n % 100
+    if x % 10 - x//10 < 2:
+        return  0 + missing_digits(n//10)
+    else:
+        return (x % 10 - (x // 10) - 1) + missing_digits(n//10)
+    
+
+        
+    
 
 
 def count_change(total):
@@ -122,7 +133,28 @@ def count_change(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    # def bPower(total):
+    #     listr = [k for k in range(total) if 2**k <= total]
+    #     return 2**max(listr) if len(listr) != 0 else 0
 
+    # def helper(total, power):
+    #     if total == 1:
+    #         return 1
+    #     elif power == 0:
+    #         return 0
+    #     elif total == 0:
+    #         return 0
+    #     else:
+    #         return helper(total - bPower(total), bPower(total - bPower(total))) + helper(total, bPower(total - bPower(total)))
+    # return helper(total,bPower(total))
+
+    def helper(total, min_coin):
+        if total < min_coin:
+            return 0
+        elif total == min_coin:
+            return 1
+        return helper(total - min_coin, min_coin) + helper(total, min_coin*2)
+    return helper(total, 1)
 
 def print_move(origin, destination):
     """Print instructions to move a disk."""
@@ -157,7 +189,14 @@ def move_stack(n, start, end):
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+    def solve(n, start, end, helper):
+        if n == 1:
+            return print_move(start, end)
+        solve(n-1,start, helper, end)
+        print_move(start, end)
+        solve(n-1, helper, end, start)
 
+    return solve(n, start, end, 2)
 
 from operator import sub, mul
 
@@ -171,5 +210,6 @@ def make_anonymous_factorial():
     >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
+    return (lambda f: lambda n: f(f,n))(lambda f, n: 1 if n == 1 else mul(n,f(f, sub(n,1))))
+
 
