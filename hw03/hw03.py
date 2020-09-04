@@ -140,12 +140,9 @@ def count_change(total):
     # def helper(total, power):
     #     if total == 1:
     #         return 1
-    #     elif power == 0:
+    #     elif total < power:
     #         return 0
-    #     elif total == 0:
-    #         return 0
-    #     else:
-    #         return helper(total - bPower(total), bPower(total - bPower(total))) + helper(total, bPower(total - bPower(total)))
+    #     return helper(total - bPower(total), power) + helper(total, bPower(total - bPower(total)))
     # return helper(total,bPower(total))
 
     def helper(total, min_coin):
