@@ -86,11 +86,6 @@ def num_eights(x):
         return 0 + num_eights(x//10)
 
 
-addOne = lambda x: x+1
-SubtractOne = lambda x:x-1
-
-def switch(f):
-    return SubtractOne if f == addOne else addOne
 
 def pingpong(n):
     """Return the nth element of the ping-pong sequence.

@@ -4,6 +4,8 @@ Abstraction for rational Numbers
 from math import gcd
 # representation of data
 def rational(n, d):
+    assert isinstance(n, int)
+    assert isinstance(d, int)
     s = gcd(n, d)
     def select(pick):
         if pick == 'n':
@@ -62,6 +64,9 @@ def divisors(n):
     return [1] + [x for x in range(2,n) if n % x == 0]
 
 curry = lambda f: lambda x: lambda y: f(x, y)
+
+
+
 
 
 
