@@ -164,7 +164,7 @@ def add_trees(t1, t2):
     4
       6
       4
-    >>> print_tree(add_trees(tree(2, [tree(3, [tree(4), tree(5)])]), \
+    >>> print_tree(add_trees(tree(2, [tree(3, [tree(4), tree(5)])]), 
     tree(2, [tree(3, [tree(4)]), tree(5)])))
     4
       6
