@@ -95,5 +95,69 @@ def print_tree(tree, indent=0):
         print_tree(b, indent + 1)
 
 
+def height(t):
+    """Return the height of a tree.
+    >>> t = tree(3, [tree(5, [tree(1)]), tree(2)])
+    >>> height(t)
+    2
+    """
+    if is_leaf(t):
+        return 0
+    return 1 + max([height(b) for b in branches(t)])
 
+
+def square_tree(t):
+    """Return a tree with the square of every element in t
+    >>> numbers = tree(1,
+    ... [tree(2,
+    ... [tree(3),
+    ... tree(4)]),
+    ... tree(5,
+    ... [tree(6,
+    ... [tree(7)]),
+    ... tree(8)])])
+    >>> print_tree(square_tree(numbers))
+    1
+     4
+      9
+      16
+     25
+      36
+       49
+      64
+    """
+    if is_leaf(t):
+        return tree(label(t)**2)
+    return tree(label(t)**2, [square_tree(b) for b in branches(t)])
     
+
+"""
+Write a function that takes in a tree and a value x and returns a list containing the
+nodes along the path required to get from the root of the tree to a node containing
+x.
+If x is not present in the tree, return None. Assume that the entries of the tree are
+unique.
+
+"""
+def find_path(tree, x):
+    """
+    >>> t = tree(2, [tree(7, [tree(3), tree(6, [tree(5), tree(11)])] ), tree(15)])
+    >>> find_path(t, 5)
+    [2, 7, 6, 5]
+    >>> find_path(t, 10) # returns None
+    """
+    path = []
+    def helper(tree, x):
+        if is_leaf(tree):
+            return [x] if label(tree) == x else None
+        elif label(tree) == x:
+            return [x]
+        else:
+            return [label(tree)] + [helper(b, x) for b in branches(tree)]
+            
+
+
+
+    helper(tree,x)
+    print(path)
+
