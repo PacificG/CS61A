@@ -161,3 +161,30 @@ def find_path(tree, x):
     helper(tree,x)
     print(path)
 
+
+def primary_stress(t):
+    """
+    The study of stress is still an open field of inquiry in linguistics—why do we say
+    “alaBAma,” but “aLAbama” and “alabaMA” make us cringe? Or how did it come
+    to be that “AMERICAN history professor” and “american HISTORY professor”
+    mean two different things? One model that we use to understand stress actually
+    employs the tree data structure!
+    In the above diagrams, every node has a “strong” child and a “weak” child, and
+    primary stress is placed on the leaf that has the greatest number of strong parents.
+    In the spirit of computational linguistics, let’s write a function that, given one of
+    these tree structures, identifies the stressed part of a word or phrase.1
+    >>> word = tree("", [tree("w", [tree("s", [tree("min")]), tree("w", [tree("ne")])]),tree("s", [tree("s", [tree("so")]), tree("w", [tree("ta")])])])
+    >>> primary_stress(word)
+    'so'
+    >>> phrase = tree("", [tree("s", [tree("s", [tree("law")]), tree("w", [tree("degree")])]),tree("w", [tree("requirement")])])
+    >>> primary_stress(phrase)
+    'law'
+    """
+    def helper(t, num_s):
+        if is_leaf(t):
+            return [label(t), num_s]
+        if label(t) == "s":
+            num_s = num_s + 1
+        return max([helper(b, num_s) for b in branches(t)], key = lambda k: k[1])
+    return helper(t, 0)[0]
+
