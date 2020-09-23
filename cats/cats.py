@@ -87,13 +87,7 @@ def wpm(typed, elapsed):
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
-    # num_words = len(typed) // 5 if len(typed) % 5 == 0 else len(typed)//5 + 1
-    # return num_words*60/elapsed 
-    if len(typed) == 0:
-        return 0.0
-    elif len(typed) <= 5:
-        return 1 * 60 / elapsed
-    return  1 * 60 / elapsed + wpm(typed[5:], elapsed)
+    return len(typed)/ 5 / (elapsed / 60)
     # END PROBLEM 4
 
 
@@ -104,6 +98,15 @@ def autocorrect(user_word, valid_words, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    if user_word in valid_words:
+        return user_word
+
+    minn = min([(diff_function(user_word, word, limit), word) for word in valid_words], key=lambda x: x[0])
+    if minn[0] > limit:
+        return user_word
+    else:
+        return minn[1]
+
     # END PROBLEM 5
 
 
@@ -113,32 +116,55 @@ def shifty_shifts(start, goal, limit):
     their lengths.
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    reach = 0
+    def helper(start, goal, limit):
+        nonlocal reach
+        if reach > limit:
+            return reach
+        else:
+            if len(start) == 0 or len(goal) == 0:
+                reach = reach + abs(len(goal) - len(start))
+                return abs(len(goal) - len(start)) 
+            elif start == goal:
+                return 0
+            elif start[0] == goal[0]:
+                return 0 + helper(start[1:], goal[1:], limit)
+            elif start[0] != goal[0]:
+                reach = reach + 1
+                return 1 + helper(start[1:], goal[1:], limit)
+    return helper(start, goal, limit)
     # END PROBLEM 6
 
 
 def meowstake_matches(start, goal, limit):
     """A diff function that computes the edit distance from START to GOAL."""
-    assert False, 'Remove this line'
+    
+    reach = 0
+    def helper(start, goal, limit):
+        
+        
+            if len(goal) == 0: # Fill in the condition
+                # BEGIN
+                return len(start)
+                # END
+            elif start == goal:
+                return 0
+            elif len(start) == 0:
+                return 1 + helper(goal[0], goal, limit)
+            elif start[0] == goal[0]: # Feel free to remove or add additional cases
+                # BEGIN
+                return 0 + helper(start[1:], goal[1:], limit)
+                # END
 
-    if ______________: # Fill in the condition
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-
-    elif ___________: # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-
-    else:
-        add_diff = ...  # Fill in these lines
-        remove_diff = ... 
-        substitute_diff = ... 
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-
+            else:
+                add_diff = 1 + helper(goal[0] + start, goal, limit)  # Fill in these lines
+                remove_diff = 1 + helper(start[1:], goal, limit)
+                substitute_diff = 1 + helper(goal[0] + start[1:], goal, limit)
+                # BEGIN
+                
+                return min(add_diff, remove_diff, substitute_diff)
+                # END
+    return helper(start, goal, limit)
 
 def final_diff(start, goal, limit):
     """A diff function. If you implement this function, it will be used."""
@@ -154,6 +180,14 @@ def report_progress(typed, prompt, id, send):
     """Send a report of your id and progress so far to the multiplayer server."""
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    count = 0
+    for i in range(len(typed)):
+        if typed[i] != prompt[i]:
+            break
+        count += 1
+    progress = count / len(prompt)
+    send({'id': id,'progress': progress})
+    return progress
     # END PROBLEM 8
 
 
@@ -180,6 +214,10 @@ def time_per_word(times_per_player, words):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    times = []
+    for playertimes in times_per_player:
+        times.append([playertimes[1:][i] - playertimes[:-1][i] for i in range(len(words))])
+    return game(words, times)
     # END PROBLEM 9
 
 
@@ -195,6 +233,13 @@ def fastest_words(game):
     words = range(len(all_words(game)))    # An index for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    ls = []
+    for p in players:
+        ls.append([])
+    for wi in words:
+        min_wi_player = min([(time(game, player_num, wi), player_num) for player_num in players], key= lambda x: x[0])[1]
+        ls[min_wi_player].append(word_at(game, wi))
+    return ls
     # END PROBLEM 10
 
 
@@ -234,7 +279,7 @@ def game_string(game):
     """A helper function that takes in a game object and returns a string representation of it"""
     return "game(%s, %s)" % (game[0], game[1])
 
-enable_multiplayer = False  # Change to True when you
+enable_multiplayer = True  # Change to True when you
 
 ##########################
 # Extra Credit #
