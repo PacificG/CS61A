@@ -220,7 +220,7 @@ class ProfessorCard(Card):
         orig_opponent_deck_length = len(opponent.deck.cards)
         "*** YOUR CODE HERE ***"
         player.deck = Deck([Card(card.name, card.attack + other_card.attack, card.defense + other_card.defense) for card in player.deck.cards[:]])
-        opponent.deck = Deck([card for card in opponent.deck.cards[:] if card.attack == other_card.attack or card.defense == other_card.defense])
+        opponent.deck = Deck([card for card in opponent.deck.cards[:] if card.attack != other_card.attack or card.defense != other_card.defense])
         discarded = orig_opponent_deck_length - len(opponent.deck.cards)
         if discarded:
             #Uncomment the line below when you've finished implementing this method!
