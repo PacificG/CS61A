@@ -188,3 +188,24 @@ def primary_stress(t):
         return max([helper(b, num_s) for b in branches(t)], key = lambda k: k[1])
     return helper(t, 0)[0]
 
+# Implement sum paths gen, which takes in a tree t and and returns a generator which
+# yields the sum of all the nodes from a path from the root of a tree to a leaf.
+# You may yield the sums in any order.
+def sum_paths_gen(t):
+    """
+    >>> t1 = tree(5)
+    >>> next(sum_paths_gen(t1))
+    5
+    >>> t2 = tree(1, [tree(2, [tree(3), tree(4)]), tree(9)])
+    >>> sorted(sum_paths_gen(t2))
+    [6, 7, 10]
+    """
+
+    if is_leaf(t):
+        yield label(t)
+    for b in branches(t):
+        yield from [label(t) + bra for bra in list(sum_paths_gen(b))]
+
+
+
+    
