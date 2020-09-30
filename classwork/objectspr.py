@@ -101,6 +101,7 @@ class A:
             return A.f(obj)
         return obj.f() + self.g(self, x - 1)
 class B(A):
+    n = 5
     def f(self):
         return 4
 
@@ -109,7 +110,11 @@ What would python display
 
 >>> x, y = A(), B()
 >>> x.f()
+2
 >>> B.f()
+Error
 >>> x.g(x, 1)
+4
 >>> y.g(x, 2)
+8
 """
