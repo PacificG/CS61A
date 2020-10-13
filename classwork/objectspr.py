@@ -118,3 +118,8 @@ Error
 >>> y.g(x, 2)
 8
 """
+
+"""
+getattr(object, attribute)
+hasattr(object, attribute)
+"""

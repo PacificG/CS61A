@@ -40,6 +40,13 @@ def every_other(s):
     Link(4)
     """
     "*** YOUR CODE HERE ***"
+    if s is Link.empty or s.rest is Link.empty:
+        pass
+    else:
+        s.rest = s.rest.rest
+        every_other(s.rest)
+
+
     
     
 
@@ -115,6 +122,7 @@ def has_cycle_constant(link):
     False
     """
     "*** YOUR CODE HERE ***"
+    
     
 
 
