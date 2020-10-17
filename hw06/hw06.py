@@ -330,21 +330,14 @@ def deep_map(f, link):
     <<2 <4 6> 8> <<10>>>
     """
     "*** YOUR CODE HERE ***"
-    import copy
-    ls = copy.deepcopy(link)
-    def helper(f, link):
-        if link == Link.empty:
-            return
-        elif isinstance(link.first, Link):
-            helper(f, link.first)
-            helper(f, link.rest)
-        
-        else:
-            link.first = f(link.first)
-            helper(f, link.rest)
-        
-    helper(f, ls)
-    return ls
+    
+    if link == Link.empty:
+        return Link.empty
+    elif isinstance(link.first, Link):
+        return Link(deep_map(f, link.first), deep_map(f,link.rest))
+    else:
+        return Link(f(link.first), deep_map(f, link.rest))
+    
 
 class Tree:
     """
