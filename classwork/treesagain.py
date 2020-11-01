@@ -15,7 +15,7 @@ class Tree:
             branch_str = ""
         return "Tree({0}{1})".format(repr(self.label), branch_str)
 
-    def isleaf(self):
+    def is_leaf(self):
         return not self.branches
 
     def __str__(self):
@@ -52,3 +52,17 @@ def height(t):
     else:
         return 1 + max([height(b) for b in t.branches])
         
+# def subtreeSizes(t):
+#     if t.is_leaf():
+#         return 1
+#     for b in t.branches:
+#         return 1 + subtreeSizes(b)
+
+def Prune(t, n):
+    """
+    Prune all sub-trees whose label is n.
+    """
+    t.branches = [b for b in t.branches if b.label != n]
+    for b in t.branches:
+        Prune(b, n)
+    

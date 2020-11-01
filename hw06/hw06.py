@@ -277,14 +277,14 @@ def path_yielder(t, value):
     """
 
     "*** YOUR CODE HERE ***"
-    # if t.label == value:
-    #     return [t.label]
-    # yield [t.label] + [path_yielder(b, value) for b in t.branches]
+    def all_paths(t):
+        if t.is_leaf():
+            yield [t.label]
+        for b in t.branches:
+            for path in all_paths(b):
+                yield [t.label] + path
 
     
-
-    # for _______________ in _________________:
-    #     for _______________ in _________________:
 
     
 
